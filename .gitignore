@@ -221,3 +221,17 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Dataset inputs and generated artifacts
+/data/raw/
+/data/processed/
+
+# Model weights and checkpoints
+/models/
+/checkpoints/
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.onnx
+*.tflite
