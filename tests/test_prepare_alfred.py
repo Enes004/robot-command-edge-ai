@@ -39,7 +39,24 @@ class DatasetTests(unittest.TestCase):
             write_trajectory(root, "trial1", "pick", [" Pick a cup! ", "  ", "…", None])
             commands, counts = load_commands(root)
         self.assertEqual(commands, [Command("Pick a cup!", "pick", "trial1")])
-        self.assertEqual(counts, {"trajectory_files": 1, "annotations": 4, "empty_removed": 3})
+        self.assertEqual(counts, {
+            "trajectory_files": 1, "unlabeled_trajectories_skipped": 0,
+            "annotations": 4, "empty_removed": 3,
+        })
+
+    def test_unlabeled_official_tests_are_skipped(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = write_trajectory(root / "tests_seen", "trial1", "pick", ["Pick a cup."])
+            trajectory = json.loads(path.read_text())
+            del trajectory["task_type"]
+            path.write_text(json.dumps(trajectory))
+            commands, counts = load_commands(root)
+            self.assertEqual(commands, [])
+            self.assertEqual(counts["unlabeled_trajectories_skipped"], 1)
+            path.rename(root / "traj_data.json")
+            with self.assertRaisesRegex(ValueError, "task_type"):
+                load_commands(root)
 
     def test_schema_error_includes_source_path(self):
         with tempfile.TemporaryDirectory() as directory:

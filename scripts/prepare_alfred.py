@@ -13,6 +13,7 @@ import unicodedata
 SEED = 42
 SPLIT_RATIOS = {"train": 0.8, "validation": 0.1, "test": 0.1}
 FIELDS = ("task_desc", "task_type", "task_id")
+UNLABELED_SUBSETS = {"tests_seen", "tests_unseen"}
 
 
 @dataclass(frozen=True)
@@ -33,10 +34,18 @@ def load_commands(input_dir):
         raise ValueError(f"No traj_data.json files found under {input_dir}")
 
     commands = []
-    counts = Counter(trajectory_files=len(files), annotations=0, empty_removed=0)
+    counts = Counter(
+        trajectory_files=len(files), unlabeled_trajectories_skipped=0,
+        annotations=0, empty_removed=0,
+    )
     for path in files:
         try:
             trajectory = json.loads(path.read_text(encoding="utf-8"))
+            if "task_type" not in trajectory and any(
+                folder in UNLABELED_SUBSETS for folder in path.parent.relative_to(input_dir).parts
+            ):
+                counts["unlabeled_trajectories_skipped"] += 1
+                continue
             task_id = trajectory["task_id"]
             task_type = trajectory["task_type"]
             annotations = trajectory["turk_annotations"]["anns"]
@@ -158,7 +167,7 @@ def plot_splits(splits, output_dir):
 
     lengths = {name: [len(normalize(row.task_desc).split()) for row in rows]
                for name, rows in splits.items()}
-    bins = range(1, max(map(max, lengths.values())) + 2)
+    bins = [length + 0.5 for length in range(max(map(max, lengths.values())) + 1)]
     fig, ax = plt.subplots(figsize=(9, 5), layout="constrained")
     for name, values in lengths.items():
         ax.hist(values, bins=bins, weights=[1 / len(values)] * len(values),
