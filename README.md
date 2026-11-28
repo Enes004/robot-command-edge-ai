@@ -20,7 +20,7 @@ CHECKSUM
 7z x data/raw/json_2.1.0.7z -odata/raw
 
 python -m scripts.prepare_alfred
-python -m unittest discover -s tests -v
+python -m unittest discover -s tests -p 'test_prepare_alfred.py' -v
 ```
 
 Use `--input-dir` and `--output-dir` to override the defaults. The tests use small local fixtures and run independently of the download.
@@ -62,3 +62,36 @@ The pipeline writes the following files under `data/processed/`.
 - `class_distribution.png` and `command_lengths.png`. The histogram uses the number of words in the normalized comparison key.
 
 ALFRED covers a fixed set of simulated household tasks, so the labels and command styles represent that domain. Goal descriptions can omit actions that distinguish classes. Removing conflicting texts reduces the ambiguity present in the source, and distinct normalized texts can still be near-paraphrases. Project splits may share scenes and annotators. Use them for text classification metrics within this project. ALFRED’s official benchmark measures grounded instruction following with its own evaluation splits.
+
+## Traditional ML baselines
+
+From the repository root, activate the virtual environment and use the CSVs from the dataset preparation step.
+
+```sh
+python -m pip install -r requirements-ml.txt
+python -m scripts.train_ml_baselines
+python -m unittest discover -s tests -v
+```
+
+Use `--input-dir` to select the directory containing the three CSVs and `--output-dir` to change the artifact location. Each candidate fits word unigram and bigram TF-IDF and its classifier on the original training CSV. The vectorizer lowercases text and keeps numbers and single-character tokens. The script scores six configurations per model on validation Macro F1. Exact ties keep the first configuration in grid order (`C` ascending, then `None` before `balanced`). The winning train-fitted pipelines are evaluated on the test CSV.
+
+### Measured results
+
+Both pipelines learned a vocabulary of 10,097 features. The sparse train, validation and test matrices were 15,043 × 10,097, 1,884 × 10,097 and 1,879 × 10,097, respectively.
+
+| Model | C | Class weight | Validation Macro F1 | Test accuracy | Test Macro Precision | Test Macro Recall | Test Macro F1 | Test Weighted F1 | Fit (s) |
+| --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Multinomial logistic regression | 10 | None | 0.93398 | 0.93081 | 0.93546 | 0.93402 | 0.93440 | 0.93136 | 0.85 |
+| LinearSVC, squared hinge | 1 | Balanced | 0.93080 | 0.93294 | 0.93703 | 0.93563 | 0.93602 | 0.93346 | 0.27 |
+
+Fit times are wall-clock measurements for each selected pipeline, including TF-IDF fitting, with numerical library thread pools limited to one thread. The run used Python 3.10.12 on x86-64. The dependency pins and recorded runtime versions provide a reference for reproducing the environment on 64-bit Raspberry Pi OS. Raspberry Pi installation, model loading and performance remain unverified.
+
+### Generated artifacts
+
+The default artifact directory is `artifacts/ml-baselines/`.
+
+- `metrics.json` records the dependency versions, vocabulary size, matrix dimensions, aggregate and per-class scores, and confusion matrices with a shared label order. Matrix rows are true classes and columns are predictions. Normalized rows show the share of each true class assigned to each predicted class.
+- `hyperparameters.csv` records all 12 validation scores and fit times. `test_predictions.csv` contains both models’ predicted labels in test CSV order with the source task ID and true label.
+- Each model’s `*_top_features.csv` lists the ten highest and ten lowest coefficients per class. Coefficients describe model weights for tokens and token pairs.
+- PNG files show the validation grid, the test model comparison and both confusion matrices per model.
+- Two `.joblib` files contain complete pipelines. Load trusted artifacts with the pinned dependencies and pass raw command strings to `predict`.
