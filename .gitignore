@@ -239,3 +239,11 @@ __marimo__/
 # Baseline experiment outputs and serialized pipelines
 /artifacts/ml-baselines/
 *.joblib
+
+# Transformer runs and deployment bundles
+/artifacts/transformers/
+/artifacts/transformers-colab/
+
+# Local deployment archives
+*.zip
+/artifacts/handover/

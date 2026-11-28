@@ -95,3 +95,108 @@ The default artifact directory is `artifacts/ml-baselines/`.
 - Each model’s `*_top_features.csv` lists the ten highest and ten lowest coefficients per class. Coefficients describe model weights for tokens and token pairs.
 - PNG files show the validation grid, the test model comparison and both confusion matrices per model.
 - Two `.joblib` files contain complete pipelines. Load trusted artifacts with the pinned dependencies and pass raw command strings to `predict`.
+
+## Transformer fine-tuning
+
+Use the same prepared ALFRED CSVs and the existing baseline artifacts. Install the
+pinned dependencies in a Python environment with sufficient disk space for PyTorch
+and both checkpoints.
+
+```sh
+python -m pip install -r requirements-transformers.txt
+nvidia-smi
+python -m unittest discover -s tests -v
+
+for model in bert-base-uncased distilbert-base-uncased; do
+  python -m scripts.train_transformers --model "$model" --require-cuda --smoke || exit 1
+done
+
+for model in bert-base-uncased distilbert-base-uncased; do
+  python -m scripts.train_transformers --model "$model" --require-cuda || exit 1
+done
+
+python -m scripts.evaluate_transformers
+```
+
+The [Colab notebook](notebooks/alfred_transformer_training.ipynb) uses the same
+CLI and saves results to Drive. Set up the unchanged CSVs before running it. For
+an offline run, pass `--source` with a local Hugging Face model directory.
+See the Transformers documentation for the supported model and tokenizer
+directory formats. [Hugging Face Auto Classes](https://huggingface.co/docs/transformers/main/en/model_doc/auto)
+
+Both models use full fine-tuning with AdamW, cross-entropy, learning rate
+`2e-5`, 3 epochs, seed 42 and effective batch size 16. The script uses BF16
+on supported CUDA devices, FP16 with gradient scaling on other supported
+CUDA devices, and FP32 on CPU. If GPU memory is insufficient, use
+`--batch-size 8 --accumulation 2 --batch-reason "CUDA memory limit"` for both
+models and repeat the smoke tests in a fresh `--output-dir`. The run
+configuration records the actual settings, package versions and split hashes.
+The default model sources use fixed Hugging Face revisions.
+
+The data audit checks all 18,806 rows for task IDs shared across splits and
+duplicate normalized commands. Both transformers use the baseline's sorted
+seven-label mapping. Train-only WordPiece lengths include special tokens.
+The script rounds the 99th percentile up to a multiple of eight, capped at
+the model limit. Each batch uses dynamic padding, truncation and attention
+masks on the original commands. For both tokenizers, the training median is
+12 tokens, p95 is 19, p99 is 22 and the maximum is 39. The chosen
+`max_length` of 24 truncates 57 of 15,043 training commands (0.38%).
+The best checkpoint is the earliest epoch
+with the highest validation Macro F1. The evaluation command loads only full
+checkpoints that match the current split fingerprints. It scores both
+saved classical pipelines on the same test CSV.
+
+### Results and Raspberry Pi 5 handover
+
+The default artifact directory is `artifacts/transformers/`.
+
+- `smoke/<model>/` contains the stratified 64-train-row, 32-validation-row smoke run.
+- `full/<model>/` contains token length statistics, training history in CSV
+  and JSON, evaluation tables and 300 dpi plots.
+- `comparison/` contains the shared test predictions, performance table,
+  per-class F1 table, full metrics JSON and comparison plots.
+- For Mertcan, transfer the complete `full/<model>/best_model/` directory
+  for each model. It contains `model.safetensors`, `config.json`, all
+  tokenizer files, `label_mapping.json`, `training_config.json` and
+  `evaluation.json`. The evaluation file is created by the evaluation CLI.
+  Load the directory with `AutoModelForSequenceClassification.from_pretrained()`
+  and `AutoTokenizer.from_pretrained()`. Use the saved `max_length` for
+  tokenization and `model.config.id2label` to decode outputs.
+
+### Measured transformer results
+
+The November 28, 2026 run used an NVIDIA GeForce RTX 4050 Laptop GPU with
+6,141 MiB VRAM and driver 580.178.04. The environment used Python 3.10.12,
+PyTorch 2.9.1+cu128 (CUDA runtime 12.8) and Transformers 5.20.2. Both
+stratified GPU smoke runs passed. Full training used BF16 and batch size 16
+with one microbatch per optimizer step. Peak PyTorch reserved CUDA memory
+was 2,032 MiB for BERT and 1,218 MiB for DistilBERT. Across each pair of
+splits, the audit found zero identical sequences of WordPiece input IDs at
+the chosen truncation length. The first direct model download timed out.
+Hugging Face Hub's Xet download then retrieved both pinned checkpoints.
+
+| Model | Validation Macro F1 | Test accuracy | Test Macro Precision | Test Macro Recall | Test Macro F1 | Test Weighted F1 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Logistic regression | 0.93398 | 0.93081 | 0.93546 | 0.93402 | 0.93440 | 0.93136 |
+| Linear SVM | 0.93080 | 0.93294 | 0.93703 | 0.93563 | 0.93602 | 0.93346 |
+| BERT | 0.94271 | 0.93986 | 0.94307 | 0.94244 | 0.94215 | 0.94048 |
+| DistilBERT | 0.93885 | 0.93933 | 0.94402 | 0.94081 | 0.94164 | 0.93998 |
+
+| Model | Selected epoch | Training time (s) | Parameters | Weight size (bytes) |
+| --- | ---: | ---: | ---: | ---: |
+| BERT | 1 | 183.04 | 109,487,623 | 437,974,004 |
+| DistilBERT | 1 | 104.31 | 66,958,855 | 267,847,948 |
+
+Transformer times cover three epochs, validation and checkpoint writes.
+The saved winning checkpoints were evaluated in FP32 on the same 1,879 test
+commands as the baseline pipelines. Test predictions and all five test
+metrics for both baselines match the earlier run. Both deployment bundles
+were reloaded offline on a local x86-64 CPU and returned seven finite logits.
+The Colab notebook schema was validated locally. A hosted Colab run and
+Raspberry Pi 5 benchmarks remain pending.
+
+## Deployment handover
+
+The [measured results](results/README.md) include CSV and JSON reports and plots
+for all four models. See [HANDOVER.md](HANDOVER.md) for the separate deployment
+archive layout, offline inference examples and pending Raspberry Pi 5 work.

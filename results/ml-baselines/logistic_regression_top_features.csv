@@ -1,0 +1,141 @@
+class,direction,rank,feature,weight
+look_at_obj_in_light,highest,1,lamp,12.69294388648361
+look_at_obj_in_light,highest,2,turn,8.22449272071356
+look_at_obj_in_light,highest,3,light,7.8472984005166175
+look_at_obj_in_light,highest,4,turn on,6.34384558951997
+look_at_obj_in_light,highest,5,the lamp,5.977463167965398
+look_at_obj_in_light,highest,6,the light,5.335339141625258
+look_at_obj_in_light,highest,7,a lamp,5.30118313512628
+look_at_obj_in_light,highest,8,examine,5.228149969687426
+look_at_obj_in_light,highest,9,examine a,3.5301371142172346
+look_at_obj_in_light,highest,10,inspect,3.3363275329276716
+look_at_obj_in_light,lowest,1,place,-5.086254966693376
+look_at_obj_in_light,lowest,2,put,-4.76642494560077
+look_at_obj_in_light,lowest,3,move,-3.1802440943942063
+look_at_obj_in_light,lowest,4,place a,-2.733728683661821
+look_at_obj_in_light,lowest,5,statue with,-2.564811685437762
+look_at_obj_in_light,lowest,6,put a,-2.4162901747810612
+look_at_obj_in_light,lowest,7,counter,-2.1354513130098653
+look_at_obj_in_light,lowest,8,slice,-1.9968637577953694
+look_at_obj_in_light,lowest,9,sink,-1.929330226093724
+look_at_obj_in_light,lowest,10,in,-1.7986700027351392
+pick_and_place_simple,highest,1,bottle,5.696845663743283
+pick_and_place_simple,highest,2,move,5.48244200748864
+pick_and_place_simple,highest,3,towel,4.842441909635363
+pick_and_place_simple,highest,4,place a,4.723334811490955
+pick_and_place_simple,highest,5,slice a,4.578226373986595
+pick_and_place_simple,highest,6,holder,4.479129788874267
+pick_and_place_simple,highest,7,plunger,4.3514222932169435
+pick_and_place_simple,highest,8,move a,4.324894924758297
+pick_and_place_simple,highest,9,cut a,4.188900656582234
+pick_and_place_simple,highest,10,dispenser,3.9982047256256474
+pick_and_place_simple,lowest,1,and,-8.340390580910139
+pick_and_place_simple,lowest,2,two,-7.522748314982491
+pick_and_place_simple,lowest,3,cup,-6.114731484614371
+pick_and_place_simple,lowest,4,plate,-4.958659633304993
+pick_and_place_simple,lowest,5,with,-4.880830262573601
+pick_and_place_simple,lowest,6,potato,-4.37959093057795
+pick_and_place_simple,lowest,7,clean,-4.348485087148141
+pick_and_place_simple,lowest,8,mug,-4.1996765451564455
+pick_and_place_simple,lowest,9,cleaned,-3.671087716321911
+pick_and_place_simple,lowest,10,wet,-3.627758237948889
+pick_and_place_with_movable_recep,highest,1,with,10.027473392941783
+pick_and_place_with_movable_recep,highest,2,pan,8.70793810311449
+pick_and_place_with_movable_recep,highest,3,plate,8.266408440391732
+pick_and_place_with_movable_recep,highest,4,box,7.641278494902447
+pick_and_place_with_movable_recep,highest,5,in,7.47721569657302
+pick_and_place_with_movable_recep,highest,6,cup,7.051946142013845
+pick_and_place_with_movable_recep,highest,7,bowl,6.797007404267317
+pick_and_place_with_movable_recep,highest,8,mug,6.5088568626305845
+pick_and_place_with_movable_recep,highest,9,dishes,6.231006398141578
+pick_and_place_with_movable_recep,highest,10,and,6.230996671446392
+pick_and_place_with_movable_recep,lowest,1,microwave,-5.159407243147403
+pick_and_place_with_movable_recep,lowest,2,cabinet,-4.241333182738372
+pick_and_place_with_movable_recep,lowest,3,drawer,-4.1107786750443545
+pick_and_place_with_movable_recep,lowest,4,heat,-4.051524656435399
+pick_and_place_with_movable_recep,lowest,5,wash,-3.6801694425378564
+pick_and_place_with_movable_recep,lowest,6,a cabinet,-3.484331670050691
+pick_and_place_with_movable_recep,lowest,7,bread,-3.4655447798723964
+pick_and_place_with_movable_recep,lowest,8,warm,-3.4652944150426093
+pick_and_place_with_movable_recep,lowest,9,water,-3.431304033850181
+pick_and_place_with_movable_recep,lowest,10,shelf,-3.330735815191997
+pick_clean_then_place_in_recep,highest,1,clean,16.312717590326073
+pick_clean_then_place_in_recep,highest,2,wash,13.26783655369211
+pick_clean_then_place_in_recep,highest,3,washed,12.010870245527178
+pick_clean_then_place_in_recep,highest,4,rinse,11.169891841278334
+pick_clean_then_place_in_recep,highest,5,cleaned,10.040033694824833
+pick_clean_then_place_in_recep,highest,6,rinsed,9.627090418990088
+pick_clean_then_place_in_recep,highest,7,water,8.052412117952908
+pick_clean_then_place_in_recep,highest,8,a clean,7.6261733626631285
+pick_clean_then_place_in_recep,highest,9,wet,7.451165010375494
+pick_clean_then_place_in_recep,highest,10,wash the,6.352412352215695
+pick_clean_then_place_in_recep,lowest,1,bread,-3.411965439993627
+pick_clean_then_place_in_recep,lowest,2,clean up,-3.0397487268131083
+pick_clean_then_place_in_recep,lowest,3,chilled,-2.7162800811984558
+pick_clean_then_place_in_recep,lowest,4,wash cloth,-2.6895315687929893
+pick_clean_then_place_in_recep,lowest,5,chill,-2.3025352610434844
+pick_clean_then_place_in_recep,lowest,6,potato put,-2.2224089500362867
+pick_clean_then_place_in_recep,lowest,7,bottle,-2.219026711303322
+pick_clean_then_place_in_recep,lowest,8,two,-2.203062879004928
+pick_clean_then_place_in_recep,lowest,9,heated,-2.191196683696679
+pick_clean_then_place_in_recep,lowest,10,up,-2.1879931435285056
+pick_cool_then_place_in_recep,highest,1,chilled,13.151972268573097
+pick_cool_then_place_in_recep,highest,2,cool,11.713394998964187
+pick_cool_then_place_in_recep,highest,3,chill,11.312113441411634
+pick_cool_then_place_in_recep,highest,4,cold,9.661085007274052
+pick_cool_then_place_in_recep,highest,5,cooled,8.02360253585438
+pick_cool_then_place_in_recep,highest,6,a chilled,7.419607899268146
+pick_cool_then_place_in_recep,highest,7,a cooled,5.335377164543309
+pick_cool_then_place_in_recep,highest,8,fridge and,5.249417204075673
+pick_cool_then_place_in_recep,highest,9,a cold,5.245446567879632
+pick_cool_then_place_in_recep,highest,10,refrigerate,4.324606400963094
+pick_cool_then_place_in_recep,lowest,1,clean,-4.07482481491632
+pick_cool_then_place_in_recep,lowest,2,cook,-3.5663510724663547
+pick_cool_then_place_in_recep,lowest,3,wash,-3.331180120558428
+pick_cool_then_place_in_recep,lowest,4,with,-3.0330855551293623
+pick_cool_then_place_in_recep,lowest,5,microwave and,-3.021676026921596
+pick_cool_then_place_in_recep,lowest,6,two,-2.796484172133789
+pick_cool_then_place_in_recep,lowest,7,washed,-2.7919556921329467
+pick_cool_then_place_in_recep,lowest,8,knife,-2.7224462110888323
+pick_cool_then_place_in_recep,lowest,9,soap,-2.710081067831738
+pick_cool_then_place_in_recep,lowest,10,rinse,-2.705861099846016
+pick_heat_then_place_in_recep,highest,1,heat,12.587901961306022
+pick_heat_then_place_in_recep,highest,2,warm,10.602939844312786
+pick_heat_then_place_in_recep,highest,3,heated,10.402508939365447
+pick_heat_then_place_in_recep,highest,4,cooked,9.355203747823937
+pick_heat_then_place_in_recep,highest,5,cook,9.203164207577988
+pick_heat_then_place_in_recep,highest,6,microwaved,8.968303069452022
+pick_heat_then_place_in_recep,highest,7,hot,7.746049499038292
+pick_heat_then_place_in_recep,highest,8,warmed,6.473994083215903
+pick_heat_then_place_in_recep,highest,9,a heated,5.969395408860241
+pick_heat_then_place_in_recep,highest,10,microwave a,5.063362604213648
+pick_heat_then_place_in_recep,lowest,1,chilled,-3.652578385959668
+pick_heat_then_place_in_recep,lowest,2,on a,-3.4213681267649267
+pick_heat_then_place_in_recep,lowest,3,clean,-3.371121084174682
+pick_heat_then_place_in_recep,lowest,4,slice a,-3.197808414232425
+pick_heat_then_place_in_recep,lowest,5,put an,-3.1510709081034056
+pick_heat_then_place_in_recep,lowest,6,the microwave,-3.150497387910488
+pick_heat_then_place_in_recep,lowest,7,lettuce,-3.1167998690378567
+pick_heat_then_place_in_recep,lowest,8,pan,-3.115069684968874
+pick_heat_then_place_in_recep,lowest,9,pick,-2.853125032014789
+pick_heat_then_place_in_recep,lowest,10,move,-2.8227635087798664
+pick_two_obj_and_place,highest,1,two,18.45371996699518
+pick_two_obj_and_place,highest,2,put two,6.593480770302191
+pick_two_obj_and_place,highest,3,bottles,6.378336441564127
+pick_two_obj_and_place,highest,4,move two,6.3464183783104495
+pick_two_obj_and_place,highest,5,both,5.444589550731906
+pick_two_obj_and_place,highest,6,place two,5.037233064298623
+pick_two_obj_and_place,highest,7,2,4.5133479786651804
+pick_two_obj_and_place,highest,8,the two,4.432981471947061
+pick_two_obj_and_place,highest,9,drawer,4.109103009304239
+pick_two_obj_and_place,highest,10,boxes,3.8995064465842297
+pick_two_obj_and_place,lowest,1,a,-7.513951484434945
+pick_two_obj_and_place,lowest,2,it,-5.615112015778691
+pick_two_obj_and_place,lowest,3,place a,-4.4250806019468945
+pick_two_obj_and_place,lowest,4,put a,-4.213668501047998
+pick_two_obj_and_place,lowest,5,tomato,-4.03218334687183
+pick_two_obj_and_place,lowest,6,move a,-3.7766258237890655
+pick_two_obj_and_place,lowest,7,bowl,-3.5962570395860816
+pick_two_obj_and_place,lowest,8,mug,-3.5920718891850285
+pick_two_obj_and_place,lowest,9,plate,-3.2506901452114962
+pick_two_obj_and_place,lowest,10,pan,-3.2163986582774724
