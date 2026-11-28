@@ -194,3 +194,9 @@ metrics for both baselines match the earlier run. Both deployment bundles
 were reloaded offline on a local x86-64 CPU and returned seven finite logits.
 The Colab notebook schema was validated locally. A hosted Colab run and
 Raspberry Pi 5 benchmarks remain pending.
+
+## Deployment handover
+
+The [measured results](results/README.md) include CSV and JSON reports and plots
+for all four models. See [HANDOVER.md](HANDOVER.md) for the separate deployment
+archive layout, offline inference examples and pending Raspberry Pi 5 work.

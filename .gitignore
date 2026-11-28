@@ -243,3 +243,7 @@ __marimo__/
 # Transformer runs and deployment bundles
 /artifacts/transformers/
 /artifacts/transformers-colab/
+
+# Local deployment archives
+*.zip
+/artifacts/handover/

@@ -1,0 +1,43 @@
+{
+  "model": "distilbert-base-uncased",
+  "source": "distilbert/distilbert-base-uncased",
+  "revision": "12040accade4e8a0f71eabdb258fecc2e7e948be",
+  "smoke": false,
+  "split_sha256": {
+    "train": "88f738e2e6c5395ca48175d2916f0a5fd7b91c27249b5b27a943c8e6b481896e",
+    "validation": "76b7292b61a79f4248fd29b63d93fe5c5f46a9cc7672491e1dead19b87ad96f3",
+    "test": "dc7c5a1992f97f946d707a9006d54dc12fdb9808fae1bb2a1ca0e38f0b4c54cb"
+  },
+  "seed": 42,
+  "epochs": 3,
+  "optimizer": "AdamW",
+  "weight_decay": 0.01,
+  "fused_adamw": true,
+  "full_fine_tuning": true,
+  "learning_rate": 2e-05,
+  "loss": "CrossEntropyLoss",
+  "train_rows": 15043,
+  "validation_rows": 1884,
+  "batch_size": 16,
+  "gradient_accumulation": 1,
+  "effective_batch_size": 16,
+  "batch_adjustment_reason": "Task 03 defaults",
+  "max_length": 24,
+  "checkpoint_metric": "validation_macro_f1",
+  "device": "cuda",
+  "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "vram_bytes": 6051135488,
+  "cuda_runtime": "12.8",
+  "precision": "torch.bfloat16",
+  "python": "3.10.12",
+  "dependencies": {
+    "torch": "2.9.1",
+    "transformers": "5.20.2",
+    "huggingface-hub": "2.4.0",
+    "tokenizers": "0.23.3",
+    "safetensors": "0.8.0",
+    "numpy": "2.2.6",
+    "scikit-learn": "1.7.2",
+    "matplotlib": "3.10.9"
+  }
+}
