@@ -235,3 +235,7 @@ __marimo__/
 *.safetensors
 *.onnx
 *.tflite
+
+# Baseline experiment outputs and serialized pipelines
+/artifacts/ml-baselines/
+*.joblib
