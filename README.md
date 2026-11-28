@@ -95,3 +95,70 @@ The default artifact directory is `artifacts/ml-baselines/`.
 - Each model’s `*_top_features.csv` lists the ten highest and ten lowest coefficients per class. Coefficients describe model weights for tokens and token pairs.
 - PNG files show the validation grid, the test model comparison and both confusion matrices per model.
 - Two `.joblib` files contain complete pipelines. Load trusted artifacts with the pinned dependencies and pass raw command strings to `predict`.
+
+## Transformer fine-tuning
+
+Use the same prepared ALFRED CSVs and the existing baseline artifacts. Install the
+pinned dependencies in a Python environment with sufficient disk space for PyTorch
+and both checkpoints.
+
+```sh
+python -m pip install -r requirements-transformers.txt
+nvidia-smi
+python -m unittest discover -s tests -v
+
+for model in bert-base-uncased distilbert-base-uncased; do
+  python -m scripts.train_transformers --model "$model" --require-cuda --smoke || exit 1
+done
+
+for model in bert-base-uncased distilbert-base-uncased; do
+  python -m scripts.train_transformers --model "$model" --require-cuda || exit 1
+done
+
+python -m scripts.evaluate_transformers
+```
+
+The [Colab notebook](notebooks/alfred_transformer_training.ipynb) uses the same
+CLI and saves results to Drive. Set up the unchanged CSVs before running it. For
+an offline run, pass `--source` with a local Hugging Face model directory.
+See the Transformers documentation for the supported model and tokenizer
+directory formats. [Hugging Face Auto Classes](https://huggingface.co/docs/transformers/main/en/model_doc/auto)
+
+Both models use full fine-tuning with AdamW, cross-entropy, learning rate
+`2e-5`, 3 epochs, seed 42 and effective batch size 16. The script uses BF16
+on supported CUDA devices, FP16 with gradient scaling on other supported
+CUDA devices, and FP32 on CPU. If GPU memory is insufficient, use
+`--batch-size 8 --accumulation 2 --batch-reason "CUDA memory limit"` for both
+models and repeat the smoke tests in a fresh `--output-dir`. The run
+configuration records the actual settings, package versions and split hashes.
+The default model sources use fixed Hugging Face revisions.
+
+The data audit checks all 18,806 rows for task IDs shared across splits and
+duplicate normalized commands. Both transformers use the baseline's sorted
+seven-label mapping. Train-only WordPiece lengths include special tokens.
+The script rounds the 99th percentile up to a multiple of eight, capped at
+the model limit. Each batch uses dynamic padding, truncation and attention
+masks on the original commands. For both tokenizers, the training median is
+12 tokens, p95 is 19, p99 is 22 and the maximum is 39. The chosen
+`max_length` of 24 truncates 57 of 15,043 training commands (0.38%).
+The best checkpoint is the earliest epoch
+with the highest validation Macro F1. The evaluation command loads only full
+checkpoints that match the current split fingerprints. It scores both
+saved classical pipelines on the same test CSV.
+
+### Results and Raspberry Pi 5 handover
+
+The default artifact directory is `artifacts/transformers/`.
+
+- `smoke/<model>/` contains the stratified 64-train-row, 32-validation-row smoke run.
+- `full/<model>/` contains token length statistics, training history in CSV
+  and JSON, evaluation tables and 300 dpi plots.
+- `comparison/` contains the shared test predictions, performance table,
+  per-class F1 table, full metrics JSON and comparison plots.
+- For Mertcan, transfer the complete `full/<model>/best_model/` directory
+  for each model. It contains `model.safetensors`, `config.json`, all
+  tokenizer files, `label_mapping.json`, `training_config.json` and
+  `evaluation.json`. The evaluation file is created by the evaluation CLI.
+  Load the directory with `AutoModelForSequenceClassification.from_pretrained()`
+  and `AutoTokenizer.from_pretrained()`. Use the saved `max_length` for
+  tokenization and `model.config.id2label` to decode outputs.
