@@ -162,3 +162,35 @@ The default artifact directory is `artifacts/transformers/`.
   Load the directory with `AutoModelForSequenceClassification.from_pretrained()`
   and `AutoTokenizer.from_pretrained()`. Use the saved `max_length` for
   tokenization and `model.config.id2label` to decode outputs.
+
+### Measured transformer results
+
+The November 28, 2026 run used an NVIDIA GeForce RTX 4050 Laptop GPU with
+6,141 MiB VRAM and driver 580.178.04. The environment used Python 3.10.12,
+PyTorch 2.9.1+cu128 (CUDA runtime 12.8) and Transformers 5.20.2. Both
+stratified GPU smoke runs passed. Full training used BF16 and batch size 16
+with one microbatch per optimizer step. Peak PyTorch reserved CUDA memory
+was 2,032 MiB for BERT and 1,218 MiB for DistilBERT. Across each pair of
+splits, the audit found zero identical sequences of WordPiece input IDs at
+the chosen truncation length. The first direct model download timed out.
+Hugging Face Hub's Xet download then retrieved both pinned checkpoints.
+
+| Model | Validation Macro F1 | Test accuracy | Test Macro Precision | Test Macro Recall | Test Macro F1 | Test Weighted F1 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Logistic regression | 0.93398 | 0.93081 | 0.93546 | 0.93402 | 0.93440 | 0.93136 |
+| Linear SVM | 0.93080 | 0.93294 | 0.93703 | 0.93563 | 0.93602 | 0.93346 |
+| BERT | 0.94271 | 0.93986 | 0.94307 | 0.94244 | 0.94215 | 0.94048 |
+| DistilBERT | 0.93885 | 0.93933 | 0.94402 | 0.94081 | 0.94164 | 0.93998 |
+
+| Model | Selected epoch | Training time (s) | Parameters | Weight size (bytes) |
+| --- | ---: | ---: | ---: | ---: |
+| BERT | 1 | 183.04 | 109,487,623 | 437,974,004 |
+| DistilBERT | 1 | 104.31 | 66,958,855 | 267,847,948 |
+
+Transformer times cover three epochs, validation and checkpoint writes.
+The saved winning checkpoints were evaluated in FP32 on the same 1,879 test
+commands as the baseline pipelines. Test predictions and all five test
+metrics for both baselines match the earlier run. Both deployment bundles
+were reloaded offline on a local x86-64 CPU and returned seven finite logits.
+The Colab notebook schema was validated locally. A hosted Colab run and
+Raspberry Pi 5 benchmarks remain pending.
